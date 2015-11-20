@@ -23,16 +23,17 @@ public class BoundGame implements ApplicationListener {
 		
 		camera = new OrthographicCamera(1, h/w);
 		batch = new SpriteBatch();
+		texture = new Texture(Gdx.files.internal("data/003.png"));
+		texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		
-		texture = new Texture(Gdx.files.internal("data/libgdx.png"));
-		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		
-		TextureRegion region = new TextureRegion(texture, 0, 0, 512, 275);
+		TextureRegion region = new TextureRegion(texture);
 		
 		sprite = new Sprite(region);
-		sprite.setSize(0.9f, 0.9f * sprite.getHeight() / sprite.getWidth());
+		
+		sprite.setSize(0.4f, 0.4f * sprite.getHeight() / sprite.getWidth());
 		sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
 		sprite.setPosition(-sprite.getWidth()/2, -sprite.getHeight()/2);
+		
 	}
 
 	@Override
@@ -45,6 +46,10 @@ public class BoundGame implements ApplicationListener {
 	public void render() {		
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		
+		float deltaTime = Gdx.graphics.getDeltaTime();
+		
+		sprite.setRotation(sprite.getRotation()+deltaTime*300);
 		
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
