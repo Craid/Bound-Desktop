@@ -1,0 +1,27 @@
+package time;
+
+import logic.Logic;
+
+public class Updates {
+	float time = 0f;
+	float frameRate;
+	private Logic logic;
+	
+	public Updates(Logic logic){
+		this.logic = logic;
+		//frameRate = 1f/10f;
+		frameRate = (1f/60f);
+	}
+	
+	public void update(float deltaTime){
+		time+=deltaTime;
+		//if (time > 3.5f) time = 3.5f; // needs to be worked on
+		while (time>frameRate){ // time = zähler; frameRate = updates/sekunde;
+			
+			logic.update();
+			time-=frameRate;
+			
+		}
+		
+	}
+}
