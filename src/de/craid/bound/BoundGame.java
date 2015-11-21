@@ -23,7 +23,7 @@ public class BoundGame implements ApplicationListener {
 		
 		camera = new OrthographicCamera(1, h/w);
 		batch = new SpriteBatch();
-		texture = new Texture(Gdx.files.internal("data/003.png"));
+		texture = new Texture(Gdx.files.internal("img/003.png"));
 		texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		
 		TextureRegion region = new TextureRegion(texture);
