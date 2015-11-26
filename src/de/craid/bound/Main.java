@@ -5,6 +5,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 public class Main {
 	public static void main(String[] args) {
+		
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
 		cfg.title = "Bound";
 		cfg.width = 720;
@@ -13,7 +14,6 @@ public class Main {
 		cfg.foregroundFPS = 0;
 		cfg.vSyncEnabled = false;
 		cfg.useGL30 = false;
-		
-		new LwjglApplication(new BoundGame(), cfg);
+		new LwjglApplication(new MultiplayerTestGame(), cfg);
 	}
 }
