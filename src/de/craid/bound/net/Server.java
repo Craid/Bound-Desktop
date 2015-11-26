@@ -2,21 +2,24 @@ package de.craid.bound.net;
 
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.util.ArrayList;
 
 public class Server {
 	
-	DatagramSocket socket; // UDP = User Datagram Protocol~
- // Socket[]         socket; // TCP
+	DatagramSocket socket;
+	ArrayList<Connection> connections = new ArrayList<Connection>();
 	
 	public Server(){
 		try {
-			socket = new DatagramSocket(11333);//TODO int wert als Port übergeben
+			socket = new DatagramSocket(11333);
 		} catch (SocketException e) {
 			e.printStackTrace();
-		 
+		}
 	}
 	
-	public void receveive(){
+	public void establishNewConnection(){}
+	
+	public void receivePlayerObject(){
 		
 	}
 	
@@ -25,13 +28,13 @@ public class Server {
 	}
 	
 	private void update(){
-		receveive();
+		receivePlayerObject();
 		compute();
 		send();
 	}
 
 	private void compute() {
-		//Welt berechnet
+		
 	}
 
 }

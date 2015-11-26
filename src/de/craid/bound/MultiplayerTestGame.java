@@ -42,8 +42,9 @@ public class MultiplayerTestGame implements ApplicationListener {
 		
 		//receive();
 		update(deltaTime);
-		renderAll();
 		//send();
+		renderAll();
+		
 		
 	}
 
