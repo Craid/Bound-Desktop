@@ -123,6 +123,11 @@ public class Player{
 			velocity.add(-1, 0);
 		if(right)
 			velocity.add(1, 0);
+
+		if(!up && !down && !left && !right){
+			velocity.x *= 0.9995;
+			velocity.y *= 0.9995;
+		}
 		
 		velocity.limit(1);
 		direction.set(velocity);
