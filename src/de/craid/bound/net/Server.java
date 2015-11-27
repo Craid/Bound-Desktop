@@ -2,12 +2,12 @@ package de.craid.bound.net;
 
 import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.util.ArrayList;
 
 public class Server {
 	
+	public String ipString = "176.198.203.104";
+	
 	DatagramSocket socket;
-	ArrayList<Connection> connections = new ArrayList<Connection>();
 	
 	public Server(){
 		try {
@@ -27,7 +27,7 @@ public class Server {
 		
 	}
 	
-	private void update(){
+	public void update(){
 		receivePlayerObject();
 		compute();
 		send();
