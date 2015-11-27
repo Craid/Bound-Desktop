@@ -19,9 +19,9 @@ public class Client {
 	// darauf achten, dass der gesetzt wird
 	public Player player;
 	private String serverIP = "localhost";
-	private String groupIP = "176.198.203.104";
+	// private String groupIP = "localhost";// "176.198.203.104";
 	private static final int SERVER_PORT = 8082;
-	private static final int GROUP_PORT = 8083;
+	// private static final int GROUP_PORT = 8083;
 	public InetAddress serverAddress;
 	public InetAddress groupAddress;
 	private static final int TIME_OUT = 5000;
@@ -38,19 +38,21 @@ public class Client {
 	 */
 	public void setPlayer(Player player) {
 		this.player = player;
-		if (player != null)
+		if (player != null) {
 			openConnection();
-		receive();
+		}
+		sendPlayerData();
+		receiveID();
 	}
 
 	private void openConnection() {
 		try {
-			socket = new DatagramSocket();
+			socket = new DatagramSocket(8083);
 			socket.setSoTimeout(TIME_OUT);
 			serverAddress = InetAddress.getByName(serverIP);
-			groupSocket = new MulticastSocket(GROUP_PORT);
-			groupAddress = InetAddress.getByName(groupIP);
-			groupSocket.joinGroup(groupAddress);
+			// groupSocket = new MulticastSocket(GROUP_PORT);
+			// groupAddress = InetAddress.getByName(groupIP);
+			// groupSocket.joinGroup(groupAddress);
 		} catch (Exception e) {
 			System.out.println("Error occured!");
 		}
@@ -86,29 +88,50 @@ public class Client {
 		DatagramPacket packet;
 
 		try {
-			while(true){
+			while (true) {
 				a = new byte[20];
 				packet = new DatagramPacket(a, a.length);
+
 				groupSocket.receive(packet);
 				processPacket(packet.getData());
 			}
 		} catch (IOException e) {
 		}
-		
+	}
+
+	public void receiveID() {
+		byte[] a;
+		DatagramPacket packet;
+		try {
+			a = new byte[20];
+			packet = new DatagramPacket(a, a.length);
+
+			while (a[0] == a[1] && a[1] == a[2] && a[2] == a[3] && a[3] == 0) {
+				socket.receive(packet);
+				packet.getData();
+			}
+
+			int id = (byte) (a[0] << 24) + (byte) (a[1] << 16)
+					+ (byte) (a[2] << 8) + (byte) (a[3]);
+			player.id = id;
+			
+			System.out.println("Updated ID to " + id);
+		} catch (IOException e) {
+		}
 	}
 
 	/**
-	 * Verarbeitet das Paket. 
-	 * In diesem Paket ist stets genau ein Player Objekt enthalten.
-	 * Dieses kann entweder in der Liste oder ein neuer Spieler sein.
-	 * Im ersten Fall werden dessen aktuelle Koordinaten und Bewegungrichtung überschrieben.
-	 * Im zweiten Fall wird der Spieler neu angelegt.
+	 * Verarbeitet das Paket. In diesem Paket ist stets genau ein Player Objekt
+	 * enthalten. Dieses kann entweder in der Liste oder ein neuer Spieler sein.
+	 * Im ersten Fall werden dessen aktuelle Koordinaten und Bewegungrichtung
+	 * überschrieben. Im zweiten Fall wird der Spieler neu angelegt.
 	 * 
 	 * @param a
 	 */
 	private void processPacket(byte[] a) {
 		int id = (byte) (a[0] << 24) + (byte) (a[1] << 16) + (byte) (a[2] << 8)
-				+ (byte) (a[3]); // signed << und unsigned <<< = 1 bit f�r minus
+				+ (byte) (a[3]); // signed << und unsigned <<< = 1 bit f�r
+									// minus
 									// oder plus
 
 		boolean playerNotInList = true;
