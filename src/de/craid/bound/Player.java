@@ -19,7 +19,7 @@ public class Player {
 	public Texture texture;
 	public Sprite sprite;
 	public float scaler = 1f; // bestimmt die Skalierung der abgebildeten Textur
-	public int id = 0; // Player ID
+	public int id = -1; // Player ID
 
 	public Player(int id) {
 		this();

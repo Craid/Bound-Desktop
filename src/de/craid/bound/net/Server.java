@@ -26,7 +26,7 @@ public class Server {
 		clients = new ArrayList<Client>();
 		players = new ArrayList<GameObject>();
 		running = false;
-		playerCount = 1;
+		playerCount = 0;
 		try {
 			socket = new DatagramSocket(8082);
 		} catch (SocketException e) {
@@ -70,7 +70,7 @@ public class Server {
 	private void startManagingClients() {
 		manageUsers = new Thread("Manage") {
 			public void run() {
-				while (running) {
+				while (!running) { //TODO ! wegmachen, wenn Methode verwendet wird!
 					sleepABit();
 					// TODO
 				}
@@ -82,7 +82,7 @@ public class Server {
 	private void startSending() {
 		send = new Thread("Send") {
 			public void run() {
-				while (running) {
+				while (!running) { //TODO ! wegmachen, wenn Methode verwendet wird!
 					sleepABit();
 				}
 			}
@@ -113,28 +113,27 @@ public class Server {
 						int id = (byte) (data[0] << 24)
 								+ (byte) (data[1] << 16)
 								+ (byte) (data[2] << 8) + (byte) (data[3]);
-
-						if (id == 0) {
-							// do nothing
+						
+						if(id==0){
+							//do nothing
+						} else if (id == -1) {
+							System.out.println("New Player");
+							GameObject o = new GameObject(data);
+							o.setID(++playerCount);
+							players.add(new GameObject(data));
 						} else {
-							if (id == 1) {
-								GameObject o = new GameObject(data);
-								o.setID(++playerCount);
-								players.add(new GameObject(data));
-								
-							} else {
-								for (GameObject o : players) {
-									if (o.getID() == id) {
-										o.data = data;
-										break;
-									}
+							for (GameObject o : players) {
+								if (o.getID() == id) {
+									o.data = data;
+									break;
 								}
 							}
-							packet.setData(data, 0, data.length);
-							packet.setAddress(InetAddress.getByName("localhost"));
-							packet.setPort(8083);
-							socket.send(packet);
 						}
+
+						packet.setData(data, 0, data.length);
+						packet.setAddress(packet.getAddress());
+						packet.setPort(packet.getPort());
+						socket.send(packet);
 
 					} catch (IOException e) {
 						e.printStackTrace();

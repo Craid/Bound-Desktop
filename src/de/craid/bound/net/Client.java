@@ -22,13 +22,17 @@ public class Client {
 	// private String groupIP = "localhost";// "176.198.203.104";
 	private static final int SERVER_PORT = 8082;
 	// private static final int GROUP_PORT = 8083;
+	public int ownPort;
 	public InetAddress serverAddress;
 	public InetAddress groupAddress;
 	private static final int TIME_OUT = 5000;
 
 	public Client() {
 		playerList = new ArrayList<Player>();
+		player = new Player();
 	}
+
+	public static Client singleton = new Client();
 
 	/**
 	 * Nachdem ein Spieler gesetzt wurde, kann die Connection aufgebaut werden.
@@ -36,27 +40,26 @@ public class Client {
 	 * 
 	 * @param player
 	 */
-	public void setPlayer(Player player) {
-		this.player = player;
+	public void startConnection() {
 		if (player != null) {
-			openConnection();
+			try {
+				openConnection();
+				sendPlayerData();
+				receiveID();
+			} catch (Exception e) {
+				System.out.println("Error Occured");
+			}
 		}
-		sendPlayerData();
-		receiveID();
 	}
 
-	private void openConnection() {
-		try {
-			socket = new DatagramSocket(8083);
-			socket.setSoTimeout(TIME_OUT);
-			serverAddress = InetAddress.getByName(serverIP);
-			// groupSocket = new MulticastSocket(GROUP_PORT);
-			// groupAddress = InetAddress.getByName(groupIP);
-			// groupSocket.joinGroup(groupAddress);
-		} catch (Exception e) {
-			System.out.println("Error occured!");
-		}
-
+	private void openConnection() throws Exception {
+		if(socket == null)
+			socket = new DatagramSocket(ownPort);
+		socket.setSoTimeout(TIME_OUT);
+		serverAddress = InetAddress.getByName(serverIP);
+		// groupSocket = new MulticastSocket(GROUP_PORT);
+		// groupAddress = InetAddress.getByName(groupIP);
+		// groupSocket.joinGroup(groupAddress);
 	}
 
 	/**
@@ -114,7 +117,7 @@ public class Client {
 			int id = (byte) (a[0] << 24) + (byte) (a[1] << 16)
 					+ (byte) (a[2] << 8) + (byte) (a[3]);
 			player.id = id;
-			
+
 			System.out.println("Updated ID to " + id);
 		} catch (IOException e) {
 		}

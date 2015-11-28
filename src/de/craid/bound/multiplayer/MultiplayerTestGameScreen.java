@@ -16,7 +16,6 @@ public class MultiplayerTestGameScreen implements Screen{
 	private SpriteBatch batch;
 	private Game game;
 	private Player player;
-	Client client;
 
 	public MultiplayerTestGameScreen(SpriteBatch batch, Game game) {
 		this.batch = batch;
@@ -33,8 +32,6 @@ public class MultiplayerTestGameScreen implements Screen{
 		
 		player = new Player(1);
 		
-		client = new Client();
-		client.setPlayer(player);
 		
 	}
 
@@ -46,7 +43,7 @@ public class MultiplayerTestGameScreen implements Screen{
 	}
 
 	private void receive() {
-		player.id = client.player.id;
+		player.id = Client.singleton.player.id;
 	}
 
 	private void update(float deltaTime) {
@@ -54,7 +51,7 @@ public class MultiplayerTestGameScreen implements Screen{
 	}
 
 	private void send() {
-		client.sendPlayerData();
+		Client.singleton.sendPlayerData();
 	}
 
 	private void renderAll() {
