@@ -7,18 +7,20 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class MultiplayerTestGame extends Game {
 
-	Screen screen;
 	SpriteBatch batch;
 	
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
-		setScreen( new MultiplayerTestGameScreen(batch, this));
+		Screen screen = new MultiplayerTestLoginScreen(batch,this);
+		setScreen(screen);
 	}
 
 	public void render() {
 		float deltaTime = Gdx.graphics.getDeltaTime();
+		batch.begin();
 		screen.render(deltaTime);
+		batch.end();
 	}
 
 	public void pause() {}
