@@ -1,6 +1,5 @@
 package de.craid.bound.multiplayer;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -20,13 +19,9 @@ import de.craid.bound.net.Client;
 public class MultiplayerTestLoginScreen implements Screen {
 
 	private Stage stage;
-	private SpriteBatch batch;
 	private Table table;
-	private Game game;
 
-	public MultiplayerTestLoginScreen(SpriteBatch batch, Game game) {
-		this.batch = batch;
-		this.game = game;
+	public MultiplayerTestLoginScreen() {
 	}
 
 	@Override

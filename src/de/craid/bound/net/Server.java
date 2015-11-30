@@ -3,7 +3,6 @@ package de.craid.bound.net;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
-import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
 
@@ -11,6 +10,7 @@ public class Server {
 
 	public String ipString = "localhost";// "176.198.203.104";
 
+	
 	DatagramSocket socket;
 
 	ArrayList<Client> clients;
@@ -138,16 +138,7 @@ public class Server {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-
 					sleepABit();
-
-					// Player player = new Player();
-					// player.receive(data);
-					//
-					// System.out.println("Player: " + player.id + " , x= " +
-					// player.position.x + " , y= " +player.position.y +
-					// ", facing direction x= " + player.direction.x
-					// +" , direction y= "+ player.direction.y );
 				}
 			}
 		};

@@ -12,15 +12,13 @@ public class MultiplayerTestGame extends Game {
 	@Override
 	public void create() {
 		batch = new SpriteBatch();
-		Screen screen = new MultiplayerTestLoginScreen(batch,this);
+		Screen screen = new MultiplayerTestLoginScreen();
 		setScreen(screen);
 	}
 
 	public void render() {
 		float deltaTime = Gdx.graphics.getDeltaTime();
-		batch.begin();
 		screen.render(deltaTime);
-		batch.end();
 	}
 
 	public void pause() {}

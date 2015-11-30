@@ -1,6 +1,5 @@
 package de.craid.bound.multiplayer;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -14,12 +13,10 @@ public class MultiplayerTestGameScreen implements Screen{
 	
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
-	private Game game;
 	private Player player;
 
-	public MultiplayerTestGameScreen(SpriteBatch batch, Game game) {
+	public MultiplayerTestGameScreen(SpriteBatch batch) {
 		this.batch = batch;
-		this.game = game;
 	}
 	
 	public void show() {
@@ -28,18 +25,17 @@ public class MultiplayerTestGameScreen implements Screen{
 		float h = Gdx.graphics.getHeight();
 		
 		camera = new OrthographicCamera(5, h/w*5);
-		batch = new SpriteBatch();
 		
 		player = new Player(1);
-		
-		
 	}
 
 	public void render(float deltaTime) {
 		receive();
 		update(deltaTime);
 		send();
+		batch.begin();
 		renderAll();
+		batch.end();
 	}
 
 	private void receive() {
