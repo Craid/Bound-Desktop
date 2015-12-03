@@ -25,7 +25,7 @@ public class MultiplayerTestGameScreen implements Screen{
 		float h = Gdx.graphics.getHeight();
 		
 		camera = new OrthographicCamera(5, h/w*5);
-		
+		//
 		player = new Player(1);
 	}
 

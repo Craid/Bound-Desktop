@@ -5,8 +5,10 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
+import de.craid.bound.Constants;
 import de.craid.bound.Player;
 
 public class Client {
@@ -92,7 +94,7 @@ public class Client {
 
 		try {
 			while (true) {
-				a = new byte[20];
+				a = new byte[Constants.PACKAGE_SIZE];
 				packet = new DatagramPacket(a, a.length);
 
 				groupSocket.receive(packet);
@@ -108,14 +110,13 @@ public class Client {
 		try {
 			a = new byte[20];
 			packet = new DatagramPacket(a, a.length);
-
-			while (a[0] == a[1] && a[1] == a[2] && a[2] == a[3] && a[3] == 0) {
+			
+			while (ByteBuffer.wrap(a).getInt() == 0) {
 				socket.receive(packet);
-				packet.getData();
+				a = packet.getData();
 			}
 
-			int id = (byte) (a[0] << 24) + (byte) (a[1] << 16)
-					+ (byte) (a[2] << 8) + (byte) (a[3]);
+			int id = ByteBuffer.wrap(a).getInt();
 			player.id = id;
 
 			System.out.println("Updated ID to " + id);
@@ -132,10 +133,7 @@ public class Client {
 	 * @param a
 	 */
 	private void processPacket(byte[] a) {
-		int id = (byte) (a[0] << 24) + (byte) (a[1] << 16) + (byte) (a[2] << 8)
-				+ (byte) (a[3]); // signed << und unsigned <<< = 1 bit f�r
-									// minus
-									// oder plus
+		int id = ByteBuffer.wrap(a).getInt();
 
 		boolean playerNotInList = true;
 		for (Player p : playerList) {

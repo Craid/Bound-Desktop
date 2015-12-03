@@ -20,6 +20,7 @@ public class Player {
 	public Sprite sprite;
 	public float scaler = 1f; // bestimmt die Skalierung der abgebildeten Textur
 	public int id = -1; // Player ID
+	private ByteBuffer bb;
 
 	public Player(int id) {
 		this();
@@ -28,18 +29,23 @@ public class Player {
 	}
 
 	public Player() {
-		texture = new Texture(Gdx.files.internal("img/001.png"));
-		texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-		TextureRegion region = new TextureRegion(texture);
-		sprite = new Sprite(region);
+		try {
+			texture = new Texture(Gdx.files.internal("img/001.png"));
+			texture.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+			TextureRegion region = new TextureRegion(texture);
+			sprite = new Sprite(region);
 
-		sprite.setSize(0.4f, 0.4f * sprite.getHeight() / sprite.getWidth());
-		sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
-		sprite.setPosition(-sprite.getWidth() / 2, -sprite.getHeight() / 2);
+			sprite.setSize(0.4f, 0.4f * sprite.getHeight() / sprite.getWidth());
+			sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
+			sprite.setPosition(-sprite.getWidth() / 2, -sprite.getHeight() / 2);
+		} catch (Exception e) {
+		}
 
 		position = new Vector2(0, 0);
 		direction = new Vector2();
 		velocity = new Vector2();
+		
+		bb = ByteBuffer.allocate(Constants.PACKAGE_SIZE);
 	}
 
 	public void initialize() {
@@ -52,60 +58,20 @@ public class Player {
 	}
 
 	public void receive(byte[] a) {
-		byte b[];
-
-		id = (int) ((a[0] & 0xFF) * (int) Math.pow(2, 24))
-				+ (int) ((a[1] & 0xFF) * (int) Math.pow(2, 16))
-				+ (int) ((a[2] & 0xFF) * (int) Math.pow(2, 8))
-				+ (int) (a[3] & 0xFF);
-
-		b = new byte[] { a[4], a[5], a[6], a[7] };
-		position.x = ByteBuffer.wrap(b).getFloat();
-
-		b = new byte[] { a[8], a[9], a[10], a[11] };
-		position.y = ByteBuffer.wrap(b).getFloat();
-
-		b = new byte[] { a[12], a[13], a[14], a[15] };
-		direction.x = ByteBuffer.wrap(b).getFloat();
-
-		b = new byte[] { a[16], a[17], a[18], a[19] };
-		direction.y = ByteBuffer.wrap(b).getFloat();
+		bb = ByteBuffer.wrap(a);
+		id = bb.getInt();
+		position.x = bb.getFloat();
+		position.y = bb.getFloat();
+		direction.x = bb.getFloat();
+		direction.y = bb.getFloat();
 	}
 
 	public byte[] send() {
-		byte[] b = new byte[20];
-
-		// id
-		b[0] = (byte) ((id >>> 24)); // bit-shift... 24 verschoben
-		b[1] = (byte) ((id >>> 16));
-		b[2] = (byte) ((id >>> 8));
-		b[3] = (byte) ((id));
-		// Position x
-		int px = Float.floatToIntBits(position.x);
-		b[4] = (byte) ((px >> 24)); // bit-shift... 24 verschoben
-		b[5] = (byte) ((px >> 16));
-		b[6] = (byte) ((px >> 8));
-		b[7] = (byte) ((px));
-		// Position y
-		int py = Float.floatToIntBits(position.y);
-		b[8] = (byte) ((py >> 24)); // bit-shift... 24 verschoben
-		b[9] = (byte) ((py >> 16));
-		b[10] = (byte) ((py >> 8));
-		b[11] = (byte) ((py));
-		// Direction x
-		int dx = Float.floatToIntBits(direction.x);
-		b[12] = (byte) ((dx >> 24));
-		b[13] = (byte) ((dx >> 16));
-		b[14] = (byte) ((dx >> 8));
-		b[15] = (byte) ((dx));
-		// Direction y
-		int dy = Float.floatToIntBits(direction.y);
-		b[16] = (byte) (dy >> 24);
-		b[17] = (byte) (dy >> 16);
-		b[18] = (byte) (dy >> 8);
-		b[19] = (byte) (dy);
-
-		return b;
+		ByteBuffer b = ByteBuffer.allocate(Constants.PACKAGE_SIZE);
+		b.putInt(id);
+		b.putFloat(position.x).putFloat(position.y);
+		b.putFloat(direction.x).putFloat(direction.y);
+		return b.array();
 	}
 
 	public void update(float deltaTime) {

@@ -1,7 +1,5 @@
 package de.craid.bound;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
 
@@ -10,12 +8,6 @@ public class Test {
 	public static void main(String args[]){
 		testMethod();
 		
-		try {
-			System.out.println(InetAddress.getLocalHost().getHostAddress());
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	
@@ -58,6 +50,19 @@ public class Test {
         System.out.println(player.position.y);
         System.out.println(player.direction.x);
         System.out.println(player.direction.y);
+        
+        System.out.println();
+        
+        ByteBuffer bb = ByteBuffer.wrap(getPlayerBytes(player));
+        bb.putInt(0,8989898);
+        
+        System.out.println(bb.getInt() + " , " + bb.getFloat() + " , " +bb.getFloat() + " , " + bb.getFloat() + " , " +bb.getFloat());
+	
+	}
+	
+	private static byte[] getPlayerBytes(Player player){
+		ByteBuffer b = ByteBuffer.allocate(20);
+		return b.putInt(player.id).putFloat(player.position.x).putFloat(player.position.y).putFloat(player.direction.x).putFloat(player.direction.y).array();
 	}
 	
 }

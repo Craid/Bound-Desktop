@@ -4,7 +4,10 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+
+import de.craid.bound.Constants;
 
 public class Server {
 
@@ -104,15 +107,13 @@ public class Server {
 
 			public void run() {
 				while (running) {
-					byte[] data = new byte[20];
+					byte[] data = new byte[Constants.PACKAGE_SIZE];
 					DatagramPacket packet = new DatagramPacket(data,
 							data.length);
 					try {
 						socket.receive(packet);
 						data = packet.getData();
-						int id = (byte) (data[0] << 24)
-								+ (byte) (data[1] << 16)
-								+ (byte) (data[2] << 8) + (byte) (data[3]);
+						int id = ByteBuffer.wrap(data).getInt();
 						
 						if(id==0){
 							//do nothing
@@ -158,15 +159,11 @@ public class Server {
 		}
 
 		public int getID() {
-			return (byte) (data[0] << 24) + (byte) (data[1] << 16)
-					+ (byte) (data[2] << 8) + (byte) (data[3]);
+			return ByteBuffer.wrap(data).getInt();
 		}
 
 		public void setID(int id) {
-			data[0] = (byte) ((id >>> 24));
-			data[1] = (byte) ((id >>> 16));
-			data[2] = (byte) ((id >>> 8));
-			data[3] = (byte) ((id));
+			data = ByteBuffer.wrap(data).putInt(id).array();
 		}
 	}
 
